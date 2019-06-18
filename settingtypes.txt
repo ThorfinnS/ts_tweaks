@@ -1,0 +1,27 @@
+# Reduces oil output in Basic Materials mod from 1:2 leaves to 1:6 leaves
+basic_materials_oil_rebalance (Rebalance Basic Materials Oil) bool true
+
+# Change to unique recipe for Wooden Bucket mod
+wooden_bucket_recipe (New Bucket Recipe) bool true
+
+# Add recipe to uncompress Gravel Sieve mod Compressed Block
+gravel_comp (Uncompress Gravel Block) bool true
+
+# Add recipe to uncompress Brewing mod Magic Block
+magic_comp (Uncompress Magic Block) bool true
+
+# Add recipe to use wood 3D Armor as fuel
+3d_armor_burn_wood (Burnable Wood Armor) bool true
+
+# Smelt 3D Armor to recover metal
+scrap_3d_armor (Smelt 3D Armor) bool true
+
+# Smelt tools to recover metal
+scrap_tools (Smelt tools) bool true
+
+# Add pine nuts as drops to standard pine trees
+pine_nuts (Pines drop pine nuts) bool true
+
+
+
+
