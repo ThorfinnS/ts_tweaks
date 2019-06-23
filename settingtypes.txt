@@ -22,6 +22,7 @@ scrap_tools (Smelt tools) bool true
 # Add pine nuts as drops to standard pine trees
 pine_nuts (Pines drop pine nuts) bool true
 
-
+# Pour biofuel can into bottles
+biofuels_decomp (Pour biofuel can into bottles) bool true
 
 

@@ -92,6 +92,19 @@ if minetest.settings:get_bool("gravel_comp") ~= false then
 	end
 end -- decompress sieved gravel block
 
+-- decompress fuel canister -- biofuels mod
+if minetest.settings:get_bool("biofuels_decomp") ~= false then
+	minetest.log('LOADING Uncompress canister')
+	if minetest.registered_items["biofuel:fuel_can"] then
+		minetest.register_craft({
+			output = "biofuel:bottle_fuel 9",
+			recipe = {
+				{"biofuel:fuel_can"},
+			},
+		})
+	end
+end -- decompress sieved gravel block
+
 
 
 -- decompress magic block -- brewing mod
@@ -154,11 +167,18 @@ end -- wooden_bucket mod
 if minetest.settings:get_bool("basic_materials_oil_rebalance") ~= false then
 	minetest.log('LOADING Basic Materials Rebalancing')
 	if minetest.registered_items["basic_materials:oil_extract"] then
-		minetest.override_item("basic_materials:oil_extract", {burntime=10})
+		minetest.register_craft({
+			type = "fuel",
+			recipe = "basic_materials:oil_extract",
+			burntime = 9})
 	end
 
+
 	if minetest.registered_items["basic_materials:paraffin"] then
-		minetest.override_item("basic_materials:paraffin", {burntime=10})
+		minetest.register_craft({
+			type = "fuel",
+			recipe = "basic_materials:oil_extract",
+			burntime = 9})
 	end
 
 
