@@ -25,4 +25,7 @@ pine_nuts (Pines drop pine nuts) bool true
 # Pour biofuel can into bottles
 biofuels_decomp (Pour biofuel can into bottles) bool true
 
+# Disassemble Trellis and Beam Pole (Farming Redo)
+farm_trellis (Disassemble Trellis and Beam Pole) bool true
+
 

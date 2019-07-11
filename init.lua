@@ -54,7 +54,7 @@ end -- burnable wood armor
 -- smelt 3D armor
 if minetest.settings:get_bool("scrap_3d_armor") ~= false then
 	minetest.log('LOADING Smelt 3D Armor')
-	for i=4,#metal do
+	for i=4,#metal do 
 		local outer='default:'..metal[i]..'_ingot'
 		for j=1,#armor do 
 			local namer='3d_armor:'..armor[j]..'_'..metal[i]
@@ -91,6 +91,27 @@ if minetest.settings:get_bool("gravel_comp") ~= false then
 		})
 	end
 end -- decompress sieved gravel block
+
+-- deconstruct trellis and bean pole -- farming redo mod
+if minetest.settings:get_bool("farm_trellis") ~= false then
+	minetest.log('LOADING Deconstruct Trellis and Bean Pole')
+	if minetest.registered_items["farming:trellis"] then
+		minetest.register_craft({
+			output = "default:stick 9",
+			recipe = {
+				{"farming:trellis"},
+			},
+		})
+	end
+	if minetest.registered_items["farming:beanpole"] then
+		minetest.register_craft({
+			output = "default:stick 4",
+			recipe = {
+				{"farming:beanpole"},
+			},
+		})
+	end
+end -- deconstruct trellis and bean pole
 
 -- decompress fuel canister -- biofuels mod
 if minetest.settings:get_bool("biofuels_decomp") ~= false then
@@ -148,17 +169,31 @@ end -- pine nuts
 
 -- wooden_bucket mod
 if minetest.settings:get_bool("wooden_bucket_recipe") ~= false then
+	local bowl="farming:bowl"
+	local buck="bucket_wooden:bucket_empty"
 	minetest.log('LOADING Wooden Bucket Recipe')
-	if minetest.registered_items["bucket_wooden:bucket_empty"] then
+	if minetest.registered_items[buck] then
 -- add recipe for wooden_bucket so it doesn't conflict with farming_redo or ethereal
 		minetest.register_craft({
-			output = 'bucket_wooden:bucket_empty',
+			output = buck,
 			recipe = {
 				{wood, leaves, wood},
-				{nada, wood, nada},
+				{nada, wood, nada}
 			}
 		})
 	end
+	
+	if minetest.registered_items[bowl] then
+-- make buckets out of 4 bowls
+		minetest.register_craft({
+			output = buck,
+			recipe = {
+				{bowl, bowl, bowl},
+				{nada, bowl, nada}
+			}
+		})
+	end
+
 end -- wooden_bucket mod
 
 
@@ -170,7 +205,7 @@ if minetest.settings:get_bool("basic_materials_oil_rebalance") ~= false then
 		minetest.register_craft({
 			type = "fuel",
 			recipe = "basic_materials:oil_extract",
-			burntime = 9})
+			burntime = 10})
 	end
 
 
@@ -178,7 +213,7 @@ if minetest.settings:get_bool("basic_materials_oil_rebalance") ~= false then
 		minetest.register_craft({
 			type = "fuel",
 			recipe = "basic_materials:oil_extract",
-			burntime = 9})
+			burntime = 10})
 	end
 
 
@@ -186,7 +221,7 @@ if minetest.settings:get_bool("basic_materials_oil_rebalance") ~= false then
 -- A use for extra seeds!
 	minetest.register_craft({
 		type = "shapeless",
-		output = "basic_materials:oil_extract 2",
+		output = "basic_materials:oil_extract 4",
 		recipe = {
 			"group:seed","group:seed","group:seed",
 			"group:seed","group:seed","group:seed"
