@@ -33,6 +33,17 @@ local function burn_item(in_, qty_)
 	end
 end
 
+local function decon_rail_fence(in_)
+if minetest.registered_items[in_] then
+		minetest.register_craft({
+			-- type = "shapeless",
+			output="default:stick 2",
+			recipe = {{in_}}
+		})
+	end
+end
+
+
 -- ---------------------------------------------------------------------------------------
 -- ---------------------------------------------------------------------------------------
 -- -------------------BEGIN MAIN CODE BLOCK-----------------------------------------------
@@ -86,9 +97,7 @@ if minetest.settings:get_bool("gravel_comp") ~= false then
 	if minetest.registered_items["gravelsieve:compressed_gravel"] then
 		minetest.register_craft({
 			output = "gravelsieve:sieved_gravel 4",
-			recipe = {
-				{"gravelsieve:compressed_gravel"},
-			},
+			recipe = {{"gravelsieve:compressed_gravel"}}
 		})
 	end
 end -- decompress sieved gravel block
@@ -99,30 +108,26 @@ if minetest.settings:get_bool("farm_trellis") ~= false then
 	if minetest.registered_items["farming:trellis"] then
 		minetest.register_craft({
 			output = "default:stick 9",
-			recipe = {
-				{"farming:trellis"},
-			},
+			recipe = {{"farming:trellis"}}
 		})
 	end
 	if minetest.registered_items["farming:beanpole"] then
 		minetest.register_craft({
 			output = "default:stick 4",
-			recipe = {
-				{"farming:beanpole"},
-			},
+			recipe = {{"farming:beanpole"}}
 		})
 	end
 end -- deconstruct trellis and bean pole
 
+
+
 -- decompress fuel canister -- biofuels mod
 if minetest.settings:get_bool("biofuels_decomp") ~= false then
-	minetest.log('LOADING Uncompress canister')
+	minetest.log('LOADING Uncompress biofuels canister')
 	if minetest.registered_items["biofuel:fuel_can"] then
 		minetest.register_craft({
 			output = "biofuel:bottle_fuel 9",
-			recipe = {
-				{"biofuel:fuel_can"},
-			},
+			recipe = {{"biofuel:fuel_can"}}
 		})
 	end
 end -- decompress sieved gravel block
@@ -135,9 +140,7 @@ if minetest.settings:get_bool("magic_comp") ~= false then
 	if minetest.registered_items["brewing:magic_crystal"] then
 		minetest.register_craft({
 			output = "brewing:magic_crystal",
-			recipe = {
-				{"brewing:magic_block"},
-			},
+			recipe = {{"brewing:magic_block"}}
 		})
 	end
 end -- decompress magic block
@@ -157,7 +160,7 @@ if minetest.settings:get_bool("pine_nuts") ~= false then
 
 	minetest.override_item("default:pine_needles", {
 		drop = {
-			max_items = 1,
+			-- max_items = 1,
 			items = {
 				{items = {"ts_tweaks:pine_nuts"}, rarity = 40},
 				{items = {"default:pine_sapling"}, rarity = 15},
@@ -177,10 +180,7 @@ if minetest.settings:get_bool("wooden_bucket_recipe") ~= false then
 -- add recipe for wooden_bucket so it doesn't conflict with farming_redo or ethereal
 		minetest.register_craft({
 			output = buck,
-			recipe = {
-				{wood, leaves, wood},
-				{nada, wood, nada}
-			}
+			recipe = {{wood, leaves, wood},{nada, wood, nada}}
 		})
 	end
 	
@@ -188,15 +188,25 @@ if minetest.settings:get_bool("wooden_bucket_recipe") ~= false then
 -- make buckets out of 4 bowls
 		minetest.register_craft({
 			output = buck,
-			recipe = {
-				{bowl, bowl, bowl},
-				{nada, bowl, nada}
-			}
+			recipe = {{bowl, bowl, bowl},{nada, bowl, nada}}
 		})
 	end
 
 end -- wooden_bucket mod
 
+--rail fences
+if minetest.registered_items["default:fence_rail_wood"] then
+	decon_rail_fence('default:fence_rail_wood')
+	decon_rail_fence('default:fence_rail_acacia_wood')
+	decon_rail_fence('default:fence_rail_junglewood')
+	decon_rail_fence('default:fence_rail_pine_wood')
+	decon_rail_fence('default:fence_rail_aspen_wood')
+	minetest.register_craft({
+			type = "shapeless",
+			output = "default:fence_rail_wood",
+			recipe = {stick, stick}
+		})
+end --rail fences
 
 
 -- basic materials
@@ -218,22 +228,30 @@ if minetest.settings:get_bool("basic_materials_oil_rebalance") ~= false then
 	end
 
 	if minetest.registered_items["basic_materials:oil_extract"] then
-		minetest.register_craft({
-			type = "shapeless",
-			output = "basic_materials:oil_extract",
-			recipe = {
-				leaves,leaves,leaves,leaves,leaves,leaves
-			}
-		})
-		
+		-- minetest.register_craft({
+			-- type = "shapeless",
+			-- output = "basic_materials:oil_extract",
+			-- recipe = {leaves,leaves,leaves,leaves,leaves,leaves}
+		-- })
+
 -- A use for extra seeds!
 		minetest.register_craft({
 			type = "shapeless",
 			output = "basic_materials:oil_extract 4",
-			recipe = {
-				seeds,seeds,seeds,seeds,seeds,seeds
-			}
+			recipe = {seeds,seeds,seeds,seeds,seeds,seeds}
 		})
 	end
 end -- basic materials
 
+-- if minetest.registered_items["cool_trees:chestnuttree"] then
+	-- minetest.register_craft({
+		-- output = "chestnuttree:slab 6",
+		-- recipe = {{"chestnuttree:wood","chestnuttree:wood","chestnuttree:wood"}}
+	-- })
+
+	-- minetest.register_craft({
+		-- output = "birch:slab 6",
+		-- recipe = {{"birch:wood","birch:wood","birch:wood"}}
+-- })
+
+-- end
