@@ -34,12 +34,28 @@ local function burn_item(in_, qty_)
 end
 
 local function decon_rail_fence(in_)
-if minetest.registered_items[in_] then
+	if minetest.registered_items[in_] then
 		minetest.register_craft({
 			-- type = "shapeless",
 			output="default:stick 2",
 			recipe = {{in_}}
 		})
+	end
+end
+
+local function cool_trees_slabs(in_)
+	local wood_,slab_,trunk_=in_..':wood', 'stairs:slab_'..in_..'_trunk', in_..':trunk'
+	if minetest.registered_items[wood_] and minetest.registered_items[slab_] then
+		minetest.clear_craft({recipe={{trunk_, trunk_, trunk_}}})
+		minetest.register_craft({
+			type = "shapeless",
+			output=slab_..' 6',
+			recipe = {wood_,wood_,wood_}})
+		minetest.clear_craft({recipe={{slab_},{slab_}}})
+		minetest.register_craft({
+			type = "shapeless",
+			output=wood_,
+			recipe = {slab_,slab_}})
 	end
 end
 
@@ -208,17 +224,30 @@ if minetest.registered_items["default:fence_rail_wood"] then
 		})
 end --rail fences
 
+--cool trees slabs
+cool_trees_slabs('birch')
+cool_trees_slabs('cherrytree')
+cool_trees_slabs('chestnuttree')
+cool_trees_slabs('clementinetree')
+cool_trees_slabs('ebony')
+cool_trees_slabs('jacaranda')
+cool_trees_slabs('larch')
+cool_trees_slabs('lemontree')
+cool_trees_slabs('mahogany')
+cool_trees_slabs('palm')
+
 
 -- basic materials
 if minetest.settings:get_bool("basic_materials_oil_rebalance") ~= false then
 	minetest.log('LOADING Basic Materials Rebalancing')
+
+--shorten burn times
 	if minetest.registered_items["basic_materials:oil_extract"] then
 		minetest.register_craft({
 			type = "fuel",
 			recipe = "basic_materials:oil_extract",
 			burntime = 10})
 	end
-
 
 	if minetest.registered_items["basic_materials:paraffin"] then
 		minetest.register_craft({
@@ -227,31 +256,27 @@ if minetest.settings:get_bool("basic_materials_oil_rebalance") ~= false then
 			burntime = 10})
 	end
 
+--reduce leaf to oil ratio
 	if minetest.registered_items["basic_materials:oil_extract"] then
-		-- minetest.register_craft({
-			-- type = "shapeless",
-			-- output = "basic_materials:oil_extract",
-			-- recipe = {leaves,leaves,leaves,leaves,leaves,leaves}
-		-- })
-
--- A use for extra seeds!
+		minetest.clear_craft({recipe={{leaves,leaves,leaves},{leaves,leaves,leaves}}})
 		minetest.register_craft({
 			type = "shapeless",
-			output = "basic_materials:oil_extract 4",
-			recipe = {seeds,seeds,seeds,seeds,seeds,seeds}
+			output = "basic_materials:oil_extract",
+			recipe = {leaves,leaves,leaves,leaves,leaves,leaves}
 		})
+--add seed to oil at twice the rate of leaf to oil
+	minetest.register_craft({
+		type = "shapeless",
+		output = "basic_materials:oil_extract 2",
+		recipe = {seeds,seeds,seeds,seeds,seeds,seeds}
+	})
 	end
+
+elseif minetest.registered_items["basic_materials:oil_extract"] then
+--add seed to oil ratio to twice that of leaf to oil, no rebalancing
+	minetest.register_craft({
+		type = "shapeless",
+		output = "basic_materials:oil_extract 4",
+		recipe = {seeds,seeds,seeds,seeds,seeds,seeds}
+	})
 end -- basic materials
-
--- if minetest.registered_items["cool_trees:chestnuttree"] then
-	-- minetest.register_craft({
-		-- output = "chestnuttree:slab 6",
-		-- recipe = {{"chestnuttree:wood","chestnuttree:wood","chestnuttree:wood"}}
-	-- })
-
-	-- minetest.register_craft({
-		-- output = "birch:slab 6",
-		-- recipe = {{"birch:wood","birch:wood","birch:wood"}}
--- })
-
--- end
