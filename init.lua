@@ -3,6 +3,9 @@ local wood  = "group:wood"
 local nada = ''
 local stick = "group:stick"
 local seeds = "group:seed"
+local modname = minetest.get_current_modname()
+local modpath = minetest.get_modpath(modname)
+
 
 local metal = {"tin", "copper", "bronze", 'gold', "steel"} 
 local armor = {'boots', 'chestplate', "leggings", "helmet"}
@@ -280,3 +283,33 @@ elseif minetest.registered_items["basic_materials:oil_extract"] then
 		recipe = {seeds,seeds,seeds,seeds,seeds,seeds}
 	})
 end -- basic materials
+
+if minetest.registered_items["desert_life:prickly_pear"] then
+	local pp_eat=modname..':prickly_pear_cooked'
+
+	minetest.register_node(pp_eat, {
+		description = "Cooked Prickly Pear",
+		drawtype = 'mesh',
+		mesh = 'dl_pp_1.obj',
+		tiles = {name='prickly_pear_cooked.png'},
+		-- tiles = {"prickly_pear_cooked.png"},
+		-- is_ground_content = true,
+		groups = {dig_immediate = 3},
+		on_use = minetest.item_eat(1)
+	})
+
+	-- minetest.register_craftitem(pp_eat, {
+		-- description = "Cooked Prickly Pear",
+		-- inventory_image = "prickly_pear_cooked.png",
+		-- on_use = minetest.item_eat(1),
+		-- -- sounds = default.node_sound_leaves_defaults()
+	-- })
+
+	minetest.register_craft({
+		type = "cooking",
+		output = pp_eat,
+		recipe = "desert_life:prickly_pear",
+		cooktime = 1
+	})
+end
+
