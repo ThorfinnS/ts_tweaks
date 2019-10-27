@@ -7,12 +7,12 @@ local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
 
 
-local metal = {"tin", "copper", "bronze", 'gold', "steel"} 
+local metal = {"tin", "copper", "bronze", 'gold', "steel", "stone", "mese", "diamond"} 
 local armor = {'boots', 'chestplate', "leggings", "helmet"}
 local qty_a = {4, 8, 7, 5} -- qty metal to make the 3d armor
 
-local tools = {'pick', 'axe', 'shovel', 'sword'}
-local qty_t = {3, 3, 1, 2} -- qty metal to make tools
+local tools = {'pick', 'axe', 'shovel', 'sword', "hoe"}
+local qty_t = {3, 3, 1, 2, 2} -- qty metal to make tools
 
 local function smelt_item(in_,out_,qty_)
 	-- if minetest.registered_items[in_] then 
@@ -85,8 +85,12 @@ end -- burnable wood armor
 -- smelt 3D armor
 if minetest.settings:get_bool("scrap_3d_armor") ~= false then
 	minetest.log('LOADING Smelt 3D Armor')
-	for i=4,#metal do 
-		local outer='default:'..metal[i]..'_ingot'
+	for i=1,#metal do
+		local suffix=''
+		if i<=5 then --metals, so output ingots
+			suffix='_ingot'
+		end
+		local outer='default:'..metal[i]..suffix
 		for j=1,#armor do 
 			local namer='3d_armor:'..armor[j]..'_'..metal[i]
 			smelt_item(namer, outer, qty_a[j])
@@ -99,10 +103,13 @@ end -- smelt 3d armor
 -- smelt tools
 if minetest.settings:get_bool("scrap_tools") ~= false then
 	minetest.log('LOADING Smelt Tools')
-	for i=3,#metal do
+	for i=1,#metal do
 		for j=1,#tools do 
-			local namer='default:'..tools[j]..'_'..metal[i]
-			local outer='default:'..metal[i]..'_ingot'
+			local namer, suffix='default:'..tools[j]..'_'..metal[i],''
+			if i<=5 then --metals, so output ingots
+				suffix='_ingot'
+			end
+			local outer='default:'..metal[i]..suffix
 			smelt_item(namer, outer, qty_t[j])
 		end
 	end
@@ -189,6 +196,44 @@ if minetest.settings:get_bool("pine_nuts") ~= false then
 	})
 end -- pine nuts
 
+-- recycle steel items
+local s_ing, s_lad, s_bar ="default:steel_ingot", "default:ladder_steel", "xpanes:bar_flat"
+minetest.register_craft({
+	type="shapeless",
+	output = s_ing,
+	recipe = {s_lad,s_lad}
+})
+
+minetest.register_craft({
+	type="shapeless",
+	output = s_ing..' 3',
+	recipe = {s_bar,s_bar,s_bar,s_bar,s_bar,s_bar,s_bar,s_bar}
+})
+-- END recycle steel items
+
+--Duane R's bed mod
+beds.register_bed(modname..':nest', {
+	description = 'Nest of Leaves',
+	tiles = {
+		bottom = {'default_leaves.png^[noalpha'},
+		top = {'default_leaves.png^[noalpha'},
+	},
+	inventory_image = 'default_leaves.png',
+	wield_image = 'default_leaves.png',
+	nodebox = {
+		bottom = {-0.5, -0.5, -0.5, 0.5, -0.3, 0.5},
+		top = {-0.5, -0.5, -0.5, 0.5, -0.3, 0.5},
+	},
+	selectionbox = {-0.5, -0.5, -0.5, 0.5, -0.3, 0.5},
+	recipe = {
+		{leaves, leaves},
+		{leaves, leaves},
+	},
+})
+
+  --END Duane R's bed mod
+
+
 
 -- wooden_bucket mod
 if minetest.settings:get_bool("wooden_bucket_recipe") ~= false then
@@ -227,7 +272,7 @@ if minetest.registered_items["default:fence_rail_wood"] then
 		})
 end --rail fences
 
---cool trees slabs
+-- --cool trees slabs
 cool_trees_slabs('birch')
 cool_trees_slabs('cherrytree')
 cool_trees_slabs('chestnuttree')
@@ -313,3 +358,35 @@ if minetest.registered_items["desert_life:prickly_pear"] then
 	})
 end
 
+
+minetest.register_craft({
+	output = "dye:orange",
+	recipe = {
+		{"farming:carrot"},
+	}
+})
+
+minetest.register_craft({
+	output = "dye:blue",
+	recipe = {
+		{"group:food_blueberries"},
+	}
+})
+
+minetest.register_craft({
+	output = "dye:red",
+	recipe = {
+		{"group:food_raspberries"},
+	}
+})
+
+if minetest.get_modpath("hopper") and minetest.get_modpath("backpacks") then
+	minetest.log('Support for Hopper and Backpacks')
+	hopper:add_container({
+		{"top", "backpacks:backpack_wool_white", "main"},
+		{"bottom", "backpacks:backpack_wool_white", "main"},
+		{"side", "backpacks:backpack_wool_white", "main"},
+	})
+else
+	minetest.log('Mod not found')
+end
