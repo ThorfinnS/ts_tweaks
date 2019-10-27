@@ -381,12 +381,12 @@ minetest.register_craft({
 })
 
 if minetest.get_modpath("hopper") and minetest.get_modpath("backpacks") then
-	minetest.log('Support for Hopper and Backpacks')
+	minetest.log('Support for hopper and backpacks')
 	hopper:add_container({
 		{"top", "backpacks:backpack_wool_white", "main"},
 		{"bottom", "backpacks:backpack_wool_white", "main"},
 		{"side", "backpacks:backpack_wool_white", "main"},
 	})
 else
-	minetest.log('Mod not found')
+	minetest.log('Support for hopper and backpacks nit installed')
 end
