@@ -90,12 +90,16 @@ if minetest.settings:get_bool("scrap_3d_armor") ~= false then
 		if i<=5 then --metals, so output ingots
 			suffix='_ingot'
 		end
-		local outer='default:'..metal[i]..suffix
+		local metal_in=metal[i]
 		for j=1,#armor do 
-			local namer='3d_armor:'..armor[j]..'_'..metal[i]
+			local namer='3d_armor:'..armor[j]..'_'..metal_in
+			if metal_in=="mese" then metal_in="mese_crystal" end
+			local outer='default:'..metal_in..suffix
+			-- minetest.log(namer..'-'..outer..'-'..tostring(qty_a[j]))
 			smelt_item(namer, outer, qty_a[j])
 		end
-		smelt_item('shields:shield_'..metal[i],outer,7)
+		local outer='default:'..metal_in..suffix
+		smelt_item('shields:shield_'..metal_in,outer,7)
 	end
 end -- smelt 3d armor
 
@@ -105,11 +109,15 @@ if minetest.settings:get_bool("scrap_tools") ~= false then
 	minetest.log('LOADING Smelt Tools')
 	for i=1,#metal do
 		for j=1,#tools do 
-			local namer, suffix='default:'..tools[j]..'_'..metal[i],''
+		local suffix=''
 			if i<=5 then --metals, so output ingots
 				suffix='_ingot'
 			end
-			local outer='default:'..metal[i]..suffix
+			local metal_in=metal[i]
+			local namer='default:'..tools[j]..'_'..metal_in
+			if metal_in=="mese" then metal_in="mese_crystal" end
+			local outer='default:'..metal_in..suffix
+			-- minetest.log(namer..'-'..outer..'-'..tostring(qty_t[j]))
 			smelt_item(namer, outer, qty_t[j])
 		end
 	end
