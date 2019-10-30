@@ -15,7 +15,7 @@ local tools = {'pick', 'axe', 'shovel', 'sword', "hoe"}
 local qty_t = {3, 3, 1, 2, 2} -- qty metal to make tools
 
 local function smelt_item(in_,out_,qty_)
-	-- if minetest.registered_items[in_] then 
+	if minetest.registered_items[in_] then 
 		out_=out_..' '..tostring(qty_)
 		minetest.register_craft({
 			type = "cooking",
@@ -23,7 +23,7 @@ local function smelt_item(in_,out_,qty_)
 			recipe = in_,
 			cooktime = qty_*3
 		})
-	-- end
+	end
 end
 
 local function burn_item(in_, qty_)
@@ -46,6 +46,20 @@ local function decon_rail_fence(in_)
 	end
 end
 
+
+-- local function cool_trees_slabs(in_)
+-- if minetest.get_modpath("stairs") ~= nil then	
+	-- stairs.register_stair_and_slab(
+		-- "mahogany_trunk",
+		-- "mahogany:trunk",
+		-- {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+		-- {"mahogany_wood.png"},
+		-- S("Mahogany Stair"),
+		-- S("Mahogany Slab"),
+		-- default.node_sound_wood_defaults()
+	-- )
+-- end
+-- end
 local function cool_trees_slabs(in_)
 	local wood_,slab_,trunk_=in_..':wood', 'stairs:slab_'..in_..'_trunk', in_..':trunk'
 	if minetest.registered_items[wood_] and minetest.registered_items[slab_] then
@@ -124,11 +138,24 @@ if minetest.settings:get_bool("scrap_tools") ~= false then
 	smelt_item('screwdriver:screwdriver', 'default:steel_ingot', 1)
 end -- smelt tools
 
+if(minetest.registered_items["brewing:magic_sword"] ~= nil) then
+	minetest.register_craft({
+	output = '"brewing:magic_crystal" 2',
+	recipe = {
+		{'', 'brewing:magic_sword', ''}
+	},
+	replacements = {{"brewing:magic_sword", "default:stick"}}
+})
+end
+
+
+
 
 -- decompress sieved gravel block -- gravel sieve mod
 if minetest.settings:get_bool("gravel_comp") ~= false then
 	minetest.log('LOADING Uncompress Gravel Block')
 	if minetest.registered_items["gravelsieve:compressed_gravel"] then
+		minetest.log("Compressed gravel block not registered")
 		minetest.register_craft({
 			output = "gravelsieve:sieved_gravel 4",
 			recipe = {{"gravelsieve:compressed_gravel"}}
@@ -204,7 +231,7 @@ if minetest.settings:get_bool("pine_nuts") ~= false then
 	})
 end -- pine nuts
 
--- recycle steel items
+-- recycle steel items found in basic_houses
 local s_ing, s_lad, s_bar ="default:steel_ingot", "default:ladder_steel", "xpanes:bar_flat"
 minetest.register_craft({
 	type="shapeless",
@@ -388,13 +415,74 @@ minetest.register_craft({
 	}
 })
 
+
+local wooldyes = {
+        {code = "white",      name = "White"},
+        {code = "grey",       name = "Grey"},
+        {code = "black",      name = "Black"},
+        {code = "red",        name = "Red"},
+        {code = "yellow",     name = "Yellow"},
+        {code = "green",      name = "Green"},
+        {code = "cyan",       name = "Cyan"},
+        {code = "blue",       name = "Blue"},
+        {code = "magenta",    name = "Magenta"},
+        {code = "orange",     name = "Orange"},
+        {code = "violet",     name = "Violet"},
+        {code = "brown",      name = "Brown"},
+        {code = "pink",       name = "Pink"},
+        {code = "dark_grey",  name = "Dark Grey"},
+        {code = "dark_green", name = "Dark Green"},
+}
+
+
+
 if minetest.get_modpath("hopper") and minetest.get_modpath("backpacks") then
 	minetest.log('Support for hopper and backpacks')
-	hopper:add_container({
-		{"top", "backpacks:backpack_wool_white", "main"},
-		{"bottom", "backpacks:backpack_wool_white", "main"},
-		{"side", "backpacks:backpack_wool_white", "main"},
-	})
+	local function bp_hopper(i)
+		hopper:add_container({
+			{"top", i, "main"},
+			{"bottom", i, "main"},
+			{"side", i, "main"},
+		})
+	end
+	
+	for _,colourdesc in pairs(wooldyes) do
+		local bp="backpacks:backpack_wool_"..colourdesc.code
+		bp_hopper(bp)
+	end
+
+	bp_hopper("backpacks:backpack_leather")
 else
-	minetest.log('Support for hopper and backpacks nit installed')
+	minetest.log('Support for hopper and backpacks not installed')
+end
+
+if minetest.get_modpath("cottages") then
+	local w="group:wood"
+	cottages:add_threshing_product("default:grass_1",{"farming:seed_wheat", "farming:seed_oat"})
+	cottages:add_threshing_product("default:dry_grass_1",{"farming:seed_barley", "farming:seed_rye"})
+	cottages:add_threshing_product("default:junglegrass",{"farming:seed_rice", "farming:seed_cotton"})
+	minetest.register_craft({
+		output = "cottages:threshing_floor",
+		recipe = {
+			{w, "default:chest_locked", w},
+			{w, "default:stone", w}
+		}
+	})
+end
+
+if ((minetest.registered_items["tubelib_addons1:grinder"] ~= nil) and (minetest.get_modpath('hopper'))) then
+	minetest.log("Loading Hopper-Grinder Patch")
+	local i="tubelib_addons1:grinder"
+	hopper:add_container({
+		{"top", i, "dst"},
+		{"bottom", i, "src"},
+		{"side", i, "dst"}
+	})
+	i="tubelib_addons1:grinder_active"
+	hopper:add_container({
+		{"top", i, "dst"},
+		{"bottom", i, "src"},
+		{"side", i, "dst"}
+	})
+
 end
